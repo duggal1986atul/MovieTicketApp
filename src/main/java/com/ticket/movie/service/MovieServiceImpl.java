@@ -1,15 +1,15 @@
 package com.ticket.movie.service;
 
-import com.ticket.movie.model.TicketDetail;
-import com.ticket.movie.model.Transaction;
+import com.ticket.movie.model.MovieTransaction;
+import com.ticket.movie.model.TicketDetails;
 import com.ticket.movie.repository.MovieRepository;
 import exception.MovieServiceException;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,29 +26,24 @@ public class MovieServiceImpl implements MovieService{
     }
 
     @Override
-    public List<Transaction> getAllTickets() throws MovieServiceException {
+    public List<MovieTransaction> getAllMovieTransactions() {
         log.info("MovieServiceImpl.getAllTickets");
 
-        List<Transaction> transactions = movieRepository.findAll();
-        if(ObjectUtils.isEmpty(transactions)) {
-            log.error("transactions listing not found");
-            throw new MovieServiceException("transactions listing not found");
+        List<MovieTransaction> movieTransactions = movieRepository.findAll();
+        if(ObjectUtils.isEmpty(movieTransactions)) {
+            return Collections.emptyList();
         }
-        return transactions;
+        return movieTransactions;
     }
 
     @Override
-    public List<TicketDetail> getTicketsById(final Integer transactionId) throws MovieServiceException {
-        if (ObjectUtils.isEmpty(transactionId)) {
-            log.error("invalid transactionId");
-            throw new MovieServiceException("invalid transactionId");
-        }
+    public List<TicketDetails> getAllTicketsById(final Integer transactionId) {
         log.info("getTicketsById {}", transactionId);
-        final Optional<Transaction> optionalTransaction= movieRepository.findById(transactionId);
+        final Optional<MovieTransaction> optionalTransaction= movieRepository.findById(transactionId);
 
-        if (!(optionalTransaction.isPresent() || (ObjectUtils.isEmpty(optionalTransaction.get()
+        if (ObjectUtils.isEmpty(optionalTransaction) ||!(optionalTransaction.isPresent() || (ObjectUtils.isEmpty(optionalTransaction.get()
                 .getTicketDetails())))) {
-            throw new MovieServiceException("Ticket Listings not Found");
+            return Collections.emptyList();
         }
         return optionalTransaction.get()
                 .getTicketDetails();
