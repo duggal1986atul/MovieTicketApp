@@ -1,5 +1,9 @@
 package com.ticket.movie.dto;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class RequestDTO {
-    private Long id;
+    @NotNull
+    private Integer transactionId;
+    @NotEmpty
     private List<CustomerDTO> customers;
 }

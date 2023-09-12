@@ -1,11 +1,12 @@
-package com.ticket.movie;
+package com.ticket.movie.controller;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.ticket.movie.controller.MovieController;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ticket.movie.dto.RequestDTO;
 import com.ticket.movie.model.MovieTransaction;
 import com.ticket.movie.model.TicketDetails;
 import com.ticket.movie.model.TicketType;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -28,6 +30,9 @@ public class MovieControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private MovieService movieService;
@@ -60,7 +65,7 @@ public class MovieControllerTest {
     public void testGetAllMovieTickets() throws Exception {
         final Integer transactionId = 10;
         given(movieService.getAllTicketsById(transactionId)).willReturn(ticketDetailsList);
-        mvc.perform(get("/transactions/10/tickets").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/transactions/{transactionId}/tickets",10).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
@@ -79,4 +84,23 @@ public class MovieControllerTest {
         mvc.perform(get("/transactions/null/tickets").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+
+    @Test
+    public void testPostAllMovieTicketsBadRequest() throws Exception {
+        String body = objectMapper.writeValueAsString(setInvalidRequestBody());
+        mvc.perform(post("/transactions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                //Then
+                .andExpect(status().isBadRequest());
     }
+
+    private RequestDTO setInvalidRequestBody()
+    {
+        RequestDTO requestDTO = new RequestDTO();
+        requestDTO.setTransactionId(10);
+        requestDTO.setCustomers(Collections.EMPTY_LIST);
+        return  requestDTO;
+    }
+  }
