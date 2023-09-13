@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ticket.movie.dto.CustomerDTO;
 import com.ticket.movie.dto.RequestDTO;
 import com.ticket.movie.model.MovieTransaction;
 import com.ticket.movie.model.TicketDetails;
@@ -95,11 +96,33 @@ public class MovieControllerTest {
                 //Then
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    public void testPostAllMovieTicketsSuccess() throws Exception {
+        String body = objectMapper.writeValueAsString(setValidRequestBody());
+        mvc.perform(post("/addTransactions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                //Then
+                .andExpect(status().is2xxSuccessful());
+    }
 
     private RequestDTO setInvalidRequestBody() {
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setTransactionId(10);
         requestDTO.setCustomers(Collections.EMPTY_LIST);
         return  requestDTO;
+    }
+
+    private RequestDTO setValidRequestBody() {
+        RequestDTO requestDTO = new RequestDTO();
+        requestDTO.setTransactionId(1);
+        CustomerDTO customerDTOSenior = new CustomerDTO();
+        customerDTOSenior.setAge(70);
+        customerDTOSenior.setName("JOHN");
+        CustomerDTO customerDTOJunior = new CustomerDTO();
+        customerDTOJunior.setName("Dorothy");
+        customerDTOJunior.setAge(6);
+        requestDTO.setCustomers(List.of(customerDTOJunior,customerDTOSenior));
+        return requestDTO;
     }
   }

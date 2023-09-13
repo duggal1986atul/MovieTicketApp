@@ -21,10 +21,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class MovieServiceImpl implements MovieService{
-
     private final MovieRepository movieRepository;
-
-
     private final TicketProcessor ticketProcessor;
 
     @Autowired
@@ -66,8 +63,8 @@ public class MovieServiceImpl implements MovieService{
             return null;
         }
         else {
-                return movieRepository.save(movieTransaction);
+            return movieRepository.save(movieTransaction);
         }
 
     }
-}
+ }

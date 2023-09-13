@@ -14,7 +14,6 @@ import java.util.List;
 @Document(collection = "MovieCosting")
 public class MovieTransaction {
 
-
     @Id
     private Integer transactionId;
     private List<TicketDetails> ticketDetails = new ArrayList<>();

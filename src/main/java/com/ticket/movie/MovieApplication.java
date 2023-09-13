@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties({MovieConfiguration.class})
 @ConfigurationPropertiesScan
 public class MovieApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(MovieApplication.class, args);
 	}

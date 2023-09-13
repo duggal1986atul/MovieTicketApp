@@ -1,11 +1,10 @@
 package com.ticket.movie.controller;
 
-import com.ticket.movie.dto.CustomerDTO;
+
 import com.ticket.movie.dto.RequestDTO;
 import com.ticket.movie.model.TicketDetails;
 import com.ticket.movie.model.MovieTransaction;
 import com.ticket.movie.service.MovieService;
-import exception.MovieServiceException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class MovieController {
     public ResponseEntity<MovieTransaction> postMovieTransactions(@Valid @RequestBody RequestDTO requestDTO)  {
         log.info("MovieController.postMovieTransactions");
         MovieTransaction transaction = movieService.processTicketCosts(requestDTO);
-        return new ResponseEntity<>(transaction, HttpStatus.OK);
+        return new ResponseEntity<>(transaction, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/transactions/{transactionId}/tickets")
@@ -45,4 +44,4 @@ public class MovieController {
         log.info("MovieController.getAllTicketsById");
         return new ResponseEntity<>(movieService.getAllTicketsById(transactionId), HttpStatus.OK);
     }
-}
+  }

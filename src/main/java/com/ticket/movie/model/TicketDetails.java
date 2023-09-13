@@ -8,6 +8,7 @@ import lombok.*;
 public class TicketDetails {
 
     private Double totalCost;
+
     private Integer quantity;
 
     private String ticketType;

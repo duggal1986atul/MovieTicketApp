@@ -5,8 +5,7 @@ import com.ticket.movie.dto.CustomerDTO;
 import com.ticket.movie.dto.RequestDTO;
 import com.ticket.movie.model.MovieTransaction;
 import com.ticket.movie.model.TicketDetails;
-import com.ticket.movie.model.TicketType;
-import com.ticket.movie.repository.MovieRepository;
+import com.ticket.movie.model.TicketType;;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-@Transactional
 public class TicketProcessor {
 
     private final MovieConfiguration configuration;
@@ -34,32 +33,33 @@ public class TicketProcessor {
 
     public MovieTransaction processTicket(@NotNull final RequestDTO requestDTO){
         MovieTransaction movieTransaction= new MovieTransaction();
-        List<TicketDetails>ticketDetails = new ArrayList<>();
-        movieTransaction.setTransactionId(requestDTO.getTransactionId());
-        //condition for adult tickets
 
+        movieTransaction.setTransactionId(requestDTO.getTransactionId());
+        movieTransaction.setTotalCost(0.0);
+
+        if(ObjectUtils.isEmpty(requestDTO) || ObjectUtils.isEmpty(requestDTO.getCustomers())) {
+                return movieTransaction;
+        }
+
+        List<TicketDetails>ticketDetails = new ArrayList<>();
         List<CustomerDTO>adultEntries = filter(c -> c.getAge() >=configuration.getAdultAge() && c.getAge()<configuration.getSeniorAge(),requestDTO.getCustomers());
+
         if(!ObjectUtils.isEmpty(adultEntries) && adultEntries.size()>0 ) {
             log.info("inside condition for adult ticket");
             TicketDetails adult =  processTicket(adultEntries,TicketType.ADULT);
             ticketDetails.add(adult);
-
         }
 
 
         List<CustomerDTO>seniors = filter(c -> c.getAge() >=configuration.getSeniorAge(),requestDTO.getCustomers());
-
-
         if(!ObjectUtils.isEmpty(seniors) && seniors.size()>0 ) {
             log.info("inside condition for senior ticket");
             TicketDetails senior =  processTicket(seniors,TicketType.SENIOR);
             ticketDetails.add(senior);
 
-
         }
 
         //condition for teenage
-
         List<CustomerDTO>teenAgeList = filter(c -> c.getAge() >configuration.getTeenAge() && c.getAge() <configuration.getAdultAge(),requestDTO.getCustomers());
         if(!ObjectUtils.isEmpty(teenAgeList) && teenAgeList.size()>0 ) {
             log.info("inside condition for teenage ticket");
@@ -72,17 +72,16 @@ public class TicketProcessor {
             log.info("inside condition for children ticket");
             TicketDetails child =  processTicket(children,TicketType.CHILDREN);
             ticketDetails.add(child);
-
         }
+
         log.info("ticketDetails size {}",ticketDetails.size());
-        Double sum = ticketDetails.stream()
-                .mapToDouble(TicketDetails::getTotalCost)
-                .sum();
+
         movieTransaction.setTicketDetails(ticketDetails);
-        movieTransaction.setTotalCost(sum);
+        movieTransaction.setTotalCost(ticketDetails.stream()
+                .mapToDouble(TicketDetails::getTotalCost)
+                .sum());
         return movieTransaction;
     }
-
 
     private TicketDetails processTicket(List<CustomerDTO> customerDTOS,TicketType ticketType){
         TicketDetails entity= new TicketDetails();
@@ -125,8 +124,6 @@ public class TicketProcessor {
                 .stream()
                 .filter(predicate).collect(Collectors.toList());
     }
-
-
-}
+  }
 
 
