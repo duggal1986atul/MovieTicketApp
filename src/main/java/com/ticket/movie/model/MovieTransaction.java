@@ -1,21 +1,22 @@
 package com.ticket.movie.model;
 
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "MovieCosting")
 public class MovieTransaction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer    transactionId;
 
-    @OneToMany(mappedBy = "movieTransaction", fetch = FetchType.LAZY)
-    private List<TicketDetails> ticketDetails;
+
+    @Id
+    private Integer transactionId;
+    private List<TicketDetails> ticketDetails = new ArrayList<>();
     private Double totalCost;
 }

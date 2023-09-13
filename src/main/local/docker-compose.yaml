@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: "mongo:4.4.3"
+    restart: always
+    ports:
+      - 27017:27017
+    container_name: mongo
+    volumes:
+      - ./data-directory:/data/db
+      # - ./mongod.conf:/etc/mongod.conf
+    networks:
+      - mnet
+
+networks:
+  mnet:
+    driver: bridge

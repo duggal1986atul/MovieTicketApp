@@ -1,9 +1,12 @@
 package com.ticket.movie.service;
 
+import com.ticket.movie.dto.RequestDTO;
 import com.ticket.movie.model.MovieTransaction;
 import com.ticket.movie.model.TicketDetails;
 import com.ticket.movie.repository.MovieRepository;
-import exception.MovieServiceException;
+import com.ticket.movie.utility.TicketProcessor;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +19,18 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 public class MovieServiceImpl implements MovieService{
 
     private final MovieRepository movieRepository;
 
+
+    private final TicketProcessor ticketProcessor;
+
     @Autowired
-    public MovieServiceImpl(MovieRepository movieRepository) {
+    public MovieServiceImpl(MovieRepository movieRepository, TicketProcessor ticketProcessor) {
         this.movieRepository = movieRepository;
+        this.ticketProcessor = ticketProcessor;
     }
 
     @Override
@@ -47,6 +55,19 @@ public class MovieServiceImpl implements MovieService{
         }
         return optionalTransaction.get()
                 .getTicketDetails();
+
+    }
+
+    @Override
+    public MovieTransaction processTicketCosts(@NotNull RequestDTO requestDTO) {
+        log.info("MovieServiceImpl.processTicketCosts");
+        MovieTransaction movieTransaction = ticketProcessor.processTicket(requestDTO);
+        if (ObjectUtils.isEmpty(movieTransaction)){
+            return null;
+        }
+        else {
+                return movieRepository.save(movieTransaction);
+        }
 
     }
 }

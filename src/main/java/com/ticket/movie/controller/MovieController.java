@@ -1,6 +1,7 @@
 package com.ticket.movie.controller;
 
 import com.ticket.movie.dto.CustomerDTO;
+import com.ticket.movie.dto.RequestDTO;
 import com.ticket.movie.model.TicketDetails;
 import com.ticket.movie.model.MovieTransaction;
 import com.ticket.movie.service.MovieService;
@@ -32,11 +33,11 @@ public class MovieController {
         return new ResponseEntity<>(movieService.getAllMovieTransactions(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/addTransactions", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MovieTransaction> postMovieTransactions(@Valid @RequestBody CustomerDTO customerDTO)  {
+    @PostMapping(path = "/addTransactions",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MovieTransaction> postMovieTransactions(@Valid @RequestBody RequestDTO requestDTO)  {
         log.info("MovieController.postMovieTransactions");
-        MovieTransaction movieTransaction = new MovieTransaction();
-        return new ResponseEntity<>(movieTransaction, HttpStatus.OK);
+        MovieTransaction transaction = movieService.processTicketCosts(requestDTO);
+        return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 
     @GetMapping(path = "/transactions/{transactionId}/tickets")

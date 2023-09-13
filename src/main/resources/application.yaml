@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      port: 27017
+      database: movie
+
+server:
+  port: 8080
+movie:
+  seniorAge: 55
+  seniorDiscount: 30
+  childrenDiscount: 25
+  adultFare: 25
+  teenFare: 12
+  teenAge: 11
+  adultAge: 18
+  childrenFare: 5

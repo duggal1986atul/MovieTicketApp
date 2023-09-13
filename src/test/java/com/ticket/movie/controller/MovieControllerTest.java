@@ -49,10 +49,10 @@ public class MovieControllerTest {
         transactionList = Lists.newArrayList();
         ticketDetailsList = Lists.newArrayList();
         ticket= new TicketDetails();
-        ticket.setTicketType(TicketType.CHILDREN);
+        ticket.setTicketType(TicketType.CHILDREN.toString());
         ticket.setQuantity(5);
-        ticket.setTransactionId(10);
-        ticket.setCost(30.0);
+        //ticket.setTransactionId(10);
+        ticket.setTotalCost(30.0);
         ticketDetailsList.add(ticket);
         movieTransaction = new MovieTransaction();
         movieTransaction.setTransactionId(10);
@@ -96,8 +96,7 @@ public class MovieControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    private RequestDTO setInvalidRequestBody()
-    {
+    private RequestDTO setInvalidRequestBody() {
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setTransactionId(10);
         requestDTO.setCustomers(Collections.EMPTY_LIST);
