@@ -7,7 +7,7 @@ Setup Requirement
 
 To run test report , use mvn test command, This will generate a jacoco report at
 target/site/jacoco/index.html
-To run this app for local installation -> go to src/local
+To run this app for local installation -> go to src/main/local
 Run docker-compose up -d, This will fire mongodb container
 Run following command -> mvn spring-boot:run.
 Test against postman following end points
