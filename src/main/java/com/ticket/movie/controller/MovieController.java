@@ -32,9 +32,9 @@ public class MovieController {
         return new ResponseEntity<>(movieService.getAllMovieTransactions(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/transactions", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/addTransactions", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MovieTransaction> postMovieTransactions(@Valid @RequestBody CustomerDTO customerDTO)  {
-        log.info("MovieController.getAllTickets");
+        log.info("MovieController.postMovieTransactions");
         MovieTransaction movieTransaction = new MovieTransaction();
         return new ResponseEntity<>(movieTransaction, HttpStatus.OK);
     }

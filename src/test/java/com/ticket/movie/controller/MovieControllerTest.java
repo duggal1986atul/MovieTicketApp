@@ -89,7 +89,7 @@ public class MovieControllerTest {
     @Test
     public void testPostAllMovieTicketsBadRequest() throws Exception {
         String body = objectMapper.writeValueAsString(setInvalidRequestBody());
-        mvc.perform(post("/transactions")
+        mvc.perform(post("/addTransactions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 //Then
